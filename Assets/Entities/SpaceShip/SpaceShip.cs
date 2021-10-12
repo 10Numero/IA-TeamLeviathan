@@ -199,10 +199,12 @@ namespace DoNotModify
 				float deltaRotation = _rotationSpeed * Time.fixedDeltaTime;
 				if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, _orientationTarget)) < deltaRotation)
 				{
+					//Debug.Log("If : " + _orientationTarget);
 					transform.eulerAngles = new Vector3(0.0f, 0.0f, _orientationTarget);
 				}
 				else
 				{
+					//Debug.Log("Else : " + _orientationTarget);
 					transform.eulerAngles += new Vector3(0.0f, 0.0f, deltaRotation * Mathf.Sign(Mathf.DeltaAngle(transform.eulerAngles.z, _orientationTarget)));
 				}
 			}

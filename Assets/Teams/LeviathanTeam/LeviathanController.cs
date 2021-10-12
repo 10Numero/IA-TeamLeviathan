@@ -8,6 +8,7 @@ namespace LevianthanTeam
 
 		public override void Initialize(SpaceShipView spaceship, GameData data)
 		{
+
 		}
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
