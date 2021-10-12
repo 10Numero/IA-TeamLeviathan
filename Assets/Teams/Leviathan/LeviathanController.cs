@@ -99,7 +99,7 @@ namespace Leviathan
 
 		bool _DetectedAsteroid()
         {
-			int mask = (1 << LayerMask.NameToLayer("Asteroid"));
+			int mask = (1 << LayerMask.NameToLayer("Asteroid")) | (1 << LayerMask.NameToLayer("WayPoint"));
 
 			_hit = Physics2D.Raycast(_spaceship.Position, _dir, 30, mask);
 
