@@ -1027,6 +1027,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2127158557}
     m_Modifications:
+    - target: {fileID: 1292504703271456123, guid: 217031d98ab90794ab255132858408bf,
+        type: 3}
+      propertyPath: m_SleepingMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1292504703271456123, guid: 217031d98ab90794ab255132858408bf,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1736900340392902965, guid: 217031d98ab90794ab255132858408bf,
         type: 3}
       propertyPath: m_RootOrder
@@ -1297,7 +1307,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420621132}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a9edf0112c9bce4b89f6a890dd94b76, type: 3}
   m_Name: 
@@ -2469,7 +2479,7 @@ PrefabInstance:
     - target: {fileID: 465293869530502438, guid: 61e79a8b198c4754db802f0506a2cf08,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 465293869530502438, guid: 61e79a8b198c4754db802f0506a2cf08,
         type: 3}
@@ -4309,6 +4319,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceShip2
+      objectReference: {fileID: 0}
+    - target: {fileID: 821512576268259773, guid: 889ab55f6899dc042bed0f84c9d18bcd,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 889ab55f6899dc042bed0f84c9d18bcd, type: 3}

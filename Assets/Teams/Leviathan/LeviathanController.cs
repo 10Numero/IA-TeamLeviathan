@@ -26,12 +26,19 @@ namespace Leviathan
 
 		private List<Vector2> directions = new List<Vector2>();
 
-		private RaycastHit2D _hit;
+		private RaycastHit2D[] _hitAsteroid;
+		private RaycastHit2D _hitWaypoint;
 		private RaycastHit2D _lastHit;
-		
 
-		public override void Initialize(SpaceShipView spaceship, GameData data)
+        private int _asteroidMask;
+        private int _wayPointMask;
+
+        public override void Initialize(SpaceShipView spaceship, GameData data)
 		{
+			int maskAsteroid = (1 << LayerMask.NameToLayer("Asteroid"));
+			int maskWaypoint = (1 << LayerMask.NameToLayer("WayPoint"));
+			_asteroidMask = maskAsteroid;
+			_wayPointMask = maskWaypoint;
 		}
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
@@ -59,10 +66,11 @@ namespace Leviathan
 			_dir = directions[directions.Count - 1] - _spaceship.Position;
 			_targetOrientation = Mathf.Atan2(_dir.y, _dir.x) * Mathf.Rad2Deg;
 
-			Debug.DrawRay(_spaceship.Position, _dir, Color.yellow);
+			Debug.DrawRay(_spaceship.Position, (directions[0] - _spaceship.Position), Color.red);
+			Debug.DrawRay(_spaceship.Position, _dir * 30, Color.yellow);
 
-            //Shoot
-            _needShoot = AimingHelpers.CanHit(_spaceship, _otherSpaceship.Position, _otherSpaceship.Velocity, 0.15f);
+			//Shoot
+			_needShoot = AimingHelpers.CanHit(_spaceship, _otherSpaceship.Position, _otherSpaceship.Velocity, 0.15f);
 
 			if (_DetectedAsteroid())
 				_AvoidAsteroidPoint();
@@ -92,27 +100,43 @@ namespace Leviathan
 			Vector2 perpendicular = Vector2.Perpendicular(_dir);
 			Vector2 origin = _actualAsteroidObstacle.view.Position;
 
-			directions.Add((origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio));
+			if (directions.Count == 1)
+				directions.Add((origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio));
+			else
+				directions[1] = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
+
 
 			_debug.transform.position = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
 		}
 
 		bool _DetectedAsteroid()
         {
-			int mask = (1 << LayerMask.NameToLayer("Asteroid")) | (1 << LayerMask.NameToLayer("WayPoint"));
+			bool hitWaypoint = false;
 
-			_hit = Physics2D.Raycast(_spaceship.Position, _dir, 30, mask);
+			_hitAsteroid = Physics2D.RaycastAll(_spaceship.Position, _dir, 30);
 
-			if (_hit.collider != null && _hit != _lastHit)
+			for(int i = 0; i < _hitAsteroid.Length; i++)
             {
-				_actualAsteroidObstacle = _hit.collider.GetComponentInParent<Asteroid>();
-				Debug.Log("Avoid asteroid : " + _actualAsteroidObstacle.gameObject.name + " radius : " + _actualAsteroidObstacle.view.Radius);
-				_lastHit = _hit;
-				return true;
-			}
+				if (_hitAsteroid[i].collider != null)
+				{
+					if(_hitAsteroid[i].collider.gameObject.layer == LayerMask.NameToLayer("WayPoint"))
+                    {
+						int wpOwner = _hitAsteroid[i].collider.GetComponentInParent<WayPoint>().Owner;
+
+						if (wpOwner != _spaceship.Owner)
+							hitWaypoint = true;
+					}
+
+					if (_hitAsteroid[i].collider.gameObject.layer == LayerMask.NameToLayer("Asteroid") && !hitWaypoint)
+					{
+						_actualAsteroidObstacle = _hitAsteroid[i].collider.GetComponentInParent<Asteroid>();
+						return true;
+					}
+				}
+            }
 
 			return false;
-        }
+		}
 
 		//Owner
 		Vector2 _GetClosestWaypointPosition()
