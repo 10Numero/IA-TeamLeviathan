@@ -92,9 +92,9 @@ namespace Leviathan
 			Vector2 perpendicular = Vector2.Perpendicular(_dir);
 			Vector2 origin = _actualAsteroidObstacle.view.Position;
 
-			directions.Add((origin + perpendicular.normalized) * radiusRatio);
+			directions.Add((origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio));
 
-			_debug.transform.position = (origin + perpendicular.normalized) * radiusRatio;
+			_debug.transform.position = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
 		}
 
 		bool _DetectedAsteroid()
