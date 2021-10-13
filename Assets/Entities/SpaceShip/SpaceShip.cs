@@ -66,9 +66,9 @@ namespace DoNotModify
 		private float _stunCountdown = 0.0f;
 
 		private float _energy = 1.0f;
-		private float _mineEnergyCost = 0.2f;
-		private float _shootEnergyCost = 0.2f;
-		private float _shockwaveEnergyCost = 0.4f;
+		private float _mineEnergyCost = 0.20f;
+		private float _shootEnergyCost = 0.12f;
+		private float _shockwaveEnergyCost = 0.35f;
 		private float _energyPerSecond = 0.12f;
 		private float _trustConsumption = 0.5f;
 
@@ -99,6 +99,15 @@ namespace DoNotModify
 		private Vector2 previousPosition = Vector2.zero;
 		private float previousRotation = 0.0f;
 		private bool willCheckRigidbody = false;
+
+		// Audio
+		[SerializeField]
+		public AudioSource shootAudio = null;
+		public AudioSource dropMineAudio = null;
+		public AudioSource fireShockwaveAudio = null;
+		public AudioSource hitAudio = null;
+		public AudioSource stunAudio = null;
+		public AudioSource shockAudio = null;
 
 		private void Awake()
 		{
@@ -199,12 +208,10 @@ namespace DoNotModify
 				float deltaRotation = _rotationSpeed * Time.fixedDeltaTime;
 				if (Mathf.Abs(Mathf.DeltaAngle(transform.eulerAngles.z, _orientationTarget)) < deltaRotation)
 				{
-					//Debug.Log("If : " + _orientationTarget);
 					transform.eulerAngles = new Vector3(0.0f, 0.0f, _orientationTarget);
 				}
 				else
 				{
-					//Debug.Log("Else : " + _orientationTarget);
 					transform.eulerAngles += new Vector3(0.0f, 0.0f, deltaRotation * Mathf.Sign(Mathf.DeltaAngle(transform.eulerAngles.z, _orientationTarget)));
 				}
 			}
@@ -240,6 +247,7 @@ namespace DoNotModify
 				return;
 			GameObject.Instantiate(minePrefab, transform.position, Quaternion.identity);
 			_energy -= _mineEnergyCost;
+			dropMineAudio?.Play();
 		}
 
 		public void Shoot()
@@ -249,6 +257,7 @@ namespace DoNotModify
 			Bullet spawned = GameObject.Instantiate<Bullet>(bulletPrefab, transform.position, transform.rotation);
 			spawned.SetOwner(_owner);
 			_energy -= _shootEnergyCost;
+			shootAudio?.Play();
 		}
 
 		public void FireShockwave()
@@ -258,6 +267,7 @@ namespace DoNotModify
 			Shockwave spawned = GameObject.Instantiate<Shockwave>(shockwavePrefab, transform.position, transform.rotation);
 			spawned.SetOwner(_owner);
 			_energy -= _shockwaveEnergyCost;
+			fireShockwaveAudio?.Play();
 		}
 
 		public void OnHitMine(Mine mine)
@@ -286,6 +296,7 @@ namespace DoNotModify
 				_stunFX = GameObject.Instantiate<GameObject>(stunFXPrefab, transform, false);
 			}
 			_stunCountdown = _stunDuration;
+			stunAudio?.Play();
 		}
 
 		private void Hit()
@@ -295,6 +306,7 @@ namespace DoNotModify
 				_hitCount++;
 			}
 
+			hitAudio.Play();
 			_hitCountdown = _hitDuration;
 			_meshRenderer.materials = new Material[2] { _meshRenderer.materials[0], hitMaterial };
 		}
@@ -309,7 +321,12 @@ namespace DoNotModify
 			return _stunCountdown > 0.0f;
 		}
 
-		public Color GetColor()
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+			shockAudio?.Play();
+		}
+
+        public Color GetColor()
 		{
 			return color;
 		}
