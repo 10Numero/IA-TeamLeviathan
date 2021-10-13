@@ -9,6 +9,7 @@ namespace Leviathan
 	{
 		private float _thrust;
 		private float _targetOrientation;
+		private float _aTargetOrientation;
 		private bool _needShoot;
 		private bool _dropMine;
 		private bool _fireShockwave;
@@ -37,15 +38,22 @@ namespace Leviathan
 		private int _asteroidMask;
 		private int _wayPointMask;
 
-
 		private Vector2 _dirA;
 		private Vector2 _dirB;
+		private Vector2 _dirC;
+		private float _dst;
 		private float _t;
 
-		private float _minDistDrift = 1;
+		private float _minDistDrift = 2f;
 
+		private Asteroid _lastAsteroidObstacle;
 
-		public override void Initialize(SpaceShipView spaceship, GameData data)
+		private float _lastDistAsteroid;
+
+		private bool _needToAdjustVelo;
+        private Vector2 _dirOffset;
+
+        public override void Initialize(SpaceShipView spaceship, GameData data)
 		{
 			int maskAsteroid = (1 << LayerMask.NameToLayer("Asteroid"));
 			int maskWaypoint = (1 << LayerMask.NameToLayer("WayPoint"));
@@ -57,76 +65,118 @@ namespace Leviathan
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			_StoreDatas(spaceship, data);
-			_Enemy();
 			_Spaceship();
 
 			return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
 		}
 
 
-		// Spaceship à revoir 
-		void _Spaceship()
-		{
-			//_thrust = 1f;
-
+        void _SpaceShipDirection()
+        {
+			//Actual WayPoint
 			if (directions.Count == 0)
-			{
 				directions.Add(_GetClosestWaypointPosition());
-			}
 			else
-			{
 				directions[0] = _GetClosestWaypointPosition();
 
-
-			}
-
+			//Next WayPoint
 			if (directions.Count == 1)
-			{
 				directions.Add(_GetNextClosestWaypointPosition(directions[0]));
-			}
 			else
-			{
 				directions[1] = _GetNextClosestWaypointPosition(directions[0]);
-			}
 
-
-			float dst = Vector2.Distance(_spaceship.Position, directions[0]);
 
 			if (Vector2.Distance(_spaceship.Position, directions[0]) < .1f)
-			{
 				directions.Remove(directions[0]);
-			}
 
-
-
-			_dirA = directions[0] - _spaceship.Position;
+			_dirA = (directions[0] - _spaceship.Position);
 			_dirB = directions[1] - _spaceship.Position;
-			if ((dst - _minDistDrift) <= 1)
-				_t = 1 - (dst / _minDistDrift);
+
+			_aTargetOrientation = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
+
+			Debug.Log("_aTargetOrientation : " + _aTargetOrientation);
+			Debug.Log("spaceship : " + _spaceship.Orientation);
+
+			//_minDistDrift = _dirB
+
+			if (_dst <= _minDistDrift)
+				_t = 1 - (_dst / _minDistDrift);
 			else
 				_t = 0;
 
-			Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
+            //Debug.Log("T: " + _t);q
+            Vector2 delta = _dirA - _spaceship.Velocity;
+			float threshold = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
+			float ratio = 0.1f;
+			
+	
+
 
 			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 
+			Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
+
 			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
 
-			//Shoot
-			_needShoot = AimingHelpers.CanHit(_spaceship, _otherSpaceship.Position, _otherSpaceship.Velocity, 0.15f);
+            Debug.Log(". : " + threshold);
+
+			Vector2 perpendicular = Vector2.Perpendicular(_targetDir);
+			Vector2 origin = (directions[0] + perpendicular.normalized) * (_nextWaypoint.Radius * 1);
 
 
-			if (dst < 30.0f)
+            if ((Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg) > 0)
+            {
+                _targetOrientation -= (threshold * ratio);
+                Debug.Log("Positif : " + _targetOrientation);
+            }
+
+            else
+            {
+                _targetOrientation += (-threshold * ratio);
+                Debug.Log("Negatif : " + _targetOrientation);
+            }
+
+        }
+
+		void _OnNewTargetWayPoint()
+        {
+		}
+
+		//Evaluate
+		void DriftForNextWaypoint()
+		{
+			//if (_dst > 2)
+			//	return;
+
+			//float delta = (_spaceship.Orientation - _aTargetOrientation) * Mathf.Deg2Rad;
+			//delta = Mathf.Abs(delta) / (Mathf.PI);
+
+			//Debug.Log("delta : " + delta);
+
+			//float ratio = 15;
+
+			//Debug.Log("Target orientation A: " + _targetOrientation);
+
+			//_targetOrientation += delta * ratio;
+
+
+			//Debug.Log("Target orientation B: " + _targetOrientation);
+		}
+
+
+		// Spaceship à revoir 
+		void _Spaceship()
+		{
+
+			_SpaceShipDirection();
+
+			if (_dst < 30.0f)
 				DriftForNextWaypoint();
 			else
 				_thrust = 1;
 
-		}
-
-
-		void _Enemy()
-		{
-			//Enemy stuff
+			//Shoot
+			_needShoot = AimingHelpers.CanHit(_spaceship, _otherSpaceship.Position, _otherSpaceship.Velocity, 0.15f);
 		}
 
 
@@ -160,7 +210,7 @@ namespace Leviathan
 		{
 			bool hitWaypoint = false;
 
-			_hitAsteroid = Physics2D.RaycastAll(_spaceship.Position, _targetDir, 30);
+			_hitAsteroid = Physics2D.RaycastAll(_spaceship.Position, _dirA, 30);
 
 			for (int i = 0; i < _hitAsteroid.Length; i++)
 			{
@@ -176,13 +226,24 @@ namespace Leviathan
 
 					if (_hitAsteroid[i].collider.gameObject.layer == LayerMask.NameToLayer("Asteroid") && !hitWaypoint)
 					{
-						_actualAsteroidObstacle = _hitAsteroid[i].collider.GetComponentInParent<Asteroid>();
-						return true;
+						float actualDistAsteroid = Vector2.Distance(_spaceship.Position, _hitAsteroid[i].collider.GetComponentInParent<Asteroid>().Position);
+						Asteroid actualAsteroid = _hitAsteroid[i].collider.GetComponentInParent<Asteroid>();
+						Debug.Log("Asteroid: " + _hitAsteroid[i].collider.gameObject.transform.parent.name);
+
+						if (_lastAsteroidObstacle == null)
+							_lastAsteroidObstacle = actualAsteroid;
+
+						if (actualDistAsteroid < _lastDistAsteroid)
+						{
+							_lastAsteroidObstacle = actualAsteroid;
+							_lastDistAsteroid = Vector2.Distance(_spaceship.Position, _hitAsteroid[i].collider.GetComponentInParent<Asteroid>().Position);
+							Debug.Break();
+							_actualAsteroidObstacle = _hitAsteroid[i].collider.GetComponentInParent<Asteroid>();
+							return true;
+						}
 					}
 				}
 			}
-
-			Debug.DrawRay(_spaceship.Position, _targetDir * 30, Color.yellow);
 
 			return false;
 		}
@@ -190,7 +251,12 @@ namespace Leviathan
 		//Owner
 		Vector2 _GetClosestWaypointPosition()
 		{
+
 			Vector2 closestWaypointPosition = Vector2.zero;
+
+			if (_nextWaypoint != null)
+				closestWaypointPosition = _nextWaypoint.Position;
+
 			float shortestDist = Mathf.Infinity;
 
 			for (int i = 0; i < _data.WayPoints.Count; i++)
@@ -198,19 +264,24 @@ namespace Leviathan
 				//No owner = -1
 				if (_data.WayPoints[i].Owner == _otherSpaceship.Owner || _data.WayPoints[i].Owner == -1)
 				{
+					float dst = Vector2.Distance(_spaceship.Position, _data.WayPoints[i].Position);
 
-					float dist = Vector2.Distance(_spaceship.Position, _data.WayPoints[i].Position);
-
-					if (dist < shortestDist)
+					if (dst < shortestDist)
 					{
-						shortestDist = dist;
+						shortestDist = dst;
 						_nextWaypoint = _data.WayPoints[i];
-						closestWaypointPosition = _data.WayPoints[i].Position;
 					}
 				}
 			}
 
-			return closestWaypointPosition;
+			_dst = Vector2.Distance(_spaceship.Position, _nextWaypoint.Position);
+
+			if (_nextWaypoint.Position != closestWaypointPosition)
+				_OnNewTargetWayPoint();
+
+			closestWaypointPosition = _nextWaypoint.Position;
+
+            return closestWaypointPosition;
 		}
 
 
@@ -224,14 +295,14 @@ namespace Leviathan
 			{
 
 				//No owner = -1
-				if (_data.WayPoints[i].Owner == _otherSpaceship.Owner || _data.WayPoints[i].Owner == -1)
+				if (_data.WayPoints[i].Owner == _otherSpaceship.Owner || _data.WayPoints[i].Owner == -1 && _data.WayPoints[i].Position != _nextWaypoint.Position)
 				{
-					float dist = Vector2.Distance(actualClosestWaypoint, _data.WayPoints[i].Position);
+					float dst = Vector2.Distance(actualClosestWaypoint, _data.WayPoints[i].Position);
 
 
-					if (dist < shortestDist && dist != 0)
+					if (dst < shortestDist && _dst != 0)
 					{
-						shortestDist = dist;
+						shortestDist = dst;
 						_waypointAfter = _data.WayPoints[i];
 						nextClosestWaypoint = _data.WayPoints[i].Position;
 					}
@@ -241,26 +312,11 @@ namespace Leviathan
 			return nextClosestWaypoint;
 		}
 
-		//Evaluate
-		void DriftForNextWaypoint()
+
+		float EaseInCubic(float start, float end, float value)
 		{
-			if (directions.Count > 1)
-			{
-
-				float delta = (_spaceship.Orientation - _targetOrientation) * Mathf.Deg2Rad;
-
-
-
-				if (delta == 0)
-					delta = 1;
-				else
-					delta = 1 - (delta / Mathf.PI);
-
-
-				Debug.Log("delta : " + delta);
-
-				_thrust = Mathf.Abs(delta);
-			}
+			end -= start;
+			return end * value * value * value + start;
 		}
 	}
 
