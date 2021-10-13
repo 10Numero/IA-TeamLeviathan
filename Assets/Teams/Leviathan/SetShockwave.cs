@@ -2,11 +2,12 @@ using BehaviorDesigner.Runtime.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leviathan;
 
 public class SetShockwave : Action
 {
     public bool setShockwaveValue;
-    public BehaviorTreeReference LeviathanBehavior;
+    public LeviathanController leviathanController;
 
     public override void OnStart()
     {
@@ -15,6 +16,6 @@ public class SetShockwave : Action
 
     public void setValue(bool shockwaveValue)
     {
-        LeviathanBehavior.variables.SetValue(setShockwaveValue, 4);
+        leviathanController.setShockwaveCondition(shockwaveValue);
     }
 }

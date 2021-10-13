@@ -318,6 +318,27 @@ namespace Leviathan
 			end -= start;
 			return end * value * value * value + start;
 		}
+
+		public void setShootCondition(bool shoot)
+		{
+			_needShoot = shoot;
+		}
+
+		public void setMineCondition(bool mine)
+		{
+			_dropMine = mine;
+		}
+
+		public void setShockwaveCondition(bool shockwave)
+		{
+			_fireShockwave = shockwave;
+		}
+
+		public SpaceShipView getSpaceship()
+		{
+			return _spaceship;
+		}
+
 	}
 
 }

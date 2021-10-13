@@ -1,20 +1,22 @@
 using BehaviorDesigner.Runtime.Tasks;
+using BehaviorDesigner.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Leviathan;
 
 public class SetMine : Action
 {
-    public bool setMineValue;
-    public BehaviorTreeReference LeviathanBehavior;
+    public SharedBool placeMine;
+    public LeviathanController leviathan;
 
     public override void OnStart()
     {
-        setValue(setMineValue);
+        useMine(placeMine.Value);
     }
 
-    public void setValue(bool mineValue)
+    public void useMine(bool placeMine)
     {
-        LeviathanBehavior.variables.SetValue(setMineValue, 2);
+        leviathan.setMineCondition(placeMine);
     }
 }
