@@ -42,7 +42,7 @@ namespace Leviathan
 		private Vector2 _dirB;
 		private Vector2 _dirC;
 		private float _dst;
-		private float _t;
+		public float _t;
 
 		private float _minDistDrift = 2f;
 
@@ -56,7 +56,18 @@ namespace Leviathan
 		public static LeviathanController instance;
 		public BehaviorTree tree;
 
-        private void Awake()
+		public float orientationA;
+		public float orientationB;
+		public float lerpOrient;
+
+		public float dot;
+
+		private bool readaptingRot;
+		public float angle;
+		public float angleB;
+		public bool newDirection;
+
+		private void Awake()
         {
 			instance = this;
 			tree = GetComponent<BehaviorTree>();
@@ -74,7 +85,7 @@ namespace Leviathan
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			_StoreDatas(spaceship, data);
-            _Spaceship();
+            //_Spaceship();
             _thrust = 1;
 			//_targetOrientation = spaceship.Orientation;
 
@@ -102,14 +113,14 @@ namespace Leviathan
 
 
 			//Some calcul
-			float ratio = .1f;
 			float deviantRot = LeviathanController.instance._spaceship.Orientation + 90;
 			deviantRot *= Mathf.Deg2Rad;
 			Vector2 right = new Vector2(Mathf.Cos(deviantRot), Mathf.Sin(deviantRot));
 
 			Vector2 dir = (_nextWaypoint.Position - _spaceship.Position);
+			Vector2 dirB = (directions[1] - _spaceship.Position);
 
-			float dot = (Vector2.Dot(dir.normalized, right));
+			dot = (Vector2.Dot(dir.normalized, right));
 
 			float _t2 = 0;
 
@@ -119,13 +130,19 @@ namespace Leviathan
 			Vector2 forward = new Vector2(Mathf.Cos(rot), Mathf.Sin(rot));
 
 			//Angle exact -> + élevée + delta est grand
-			float angle = Vector2.Angle(forward, dir);
+			angle = Vector2.Angle(forward, dir);
 
+			//Angle exact -> + élevée + delta est grand
+			angleB = Vector2.Angle(forward, dirB);
+
+			_OnNewTargetWayPoint();
 
 			//Direction
 			_dirA = directions[0] - _spaceship.Position;
 			_dirB = directions[1] - _spaceship.Position;
 
+
+			float ratio = 1f;
 
 			//Drift
 			if (_dst <= _minDistDrift)
@@ -133,48 +150,73 @@ namespace Leviathan
 			else
 				_t = 0;
 
+			//if (dot > 0)
+   //         {
+			//	//Gros angle
+			//	if(dot > 0.4f)
+   //             {
+			//		_targetOrientation = (dot * ratio);
+			//		_targetDir = _dirA;
+			//		Debug.Log("Left Chaud");
 
-			//optimization drift orientation
-			if (_dst <= _minDistDrift)
-				_t2 = 1 - (_dst / 1);
-			else
-				_t2 = 0;
+			//	}
+   //             else
+   //             {
+			//		_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
+			//	}
+   //         }
+   //         else
+   //         {
+			//	if(dot < -0.4f)
+   //             {
+			//		_targetOrientation = -(dot * ratio);
+			//		_targetDir = _dirA;
+			//		Debug.Log("Right Chaud");
+			//	}
+   //             else
+   //             {
 
-
-
-			if (dot > 0)
-			{
-				//Faut aller vers la droite
-				Debug.Log("Looking left");
-				//orientationA += ((_t2 * ratio) * dot);
-			}
-			else
-			{
-				Debug.Log("Looking right");
-				//orientationA -= ((_t2 * ratio) * dot);
-			}
-
-			//Final orientation
-			float orientationA = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
-			float orientationB = Mathf.Atan2(_dirB.y, _dirB.x) * Mathf.Rad2Deg;
-
+			//	}
+            //}
 			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 
-            _targetOrientation = Mathf.Lerp(orientationA, orientationB, _t);
-            //_targetOrientation = orientationA;
-            //_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
+			//optimization drift orientation
+			//if (_dst > 0.1f && _dst <= 0.2f)
+			//	_t2 = 1 - (_dst / 0.1f);
+			//else
+			//	_t2 = 0;
 
-            //Debug
-            Debug.DrawRay(_spaceship.Position, forward, Color.red);
-			//Debug.DrawRay(_spaceship.Position, new Vector2(Mathf.Cos(orientationA * Mathf.Deg2Rad), Mathf.Sin(orientationA * Mathf.Deg2Rad)), Color.blue);
-			//Debug.DrawRay(_spaceship.Position, new Vector2(Mathf.Cos(orientationB * Mathf.Deg2Rad), Mathf.Sin(orientationB * Mathf.Deg2Rad)), Color.blue);
-			Debug.DrawRay(_spaceship.Position, _dirB, Color.green);
-			Debug.DrawRay(_spaceship.Position, _dirA, Color.cyan);
-			Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
+
+			//if (dot > 0)
+			//{
+			//	//Faut aller vers la droite
+			//	Debug.Log("Looking left");
+			//	//orientationA += (dot * _t2 * ratio);
+			//}
+			//else
+			//{
+			//	Debug.Log("Looking right");
+			//	//orientationA -= (dot * _t2 * ratio);
+			//}
+
+			//Orientation
+			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
+
+			//Debug
+			Debug.DrawRay(_spaceship.Position, forward, Color.red);
+            Debug.DrawRay(_spaceship.Position, _dirB, Color.green);
+            Debug.DrawRay(_spaceship.Position, _dirA, Color.cyan);
+            Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
 		}
 
 		void _OnNewTargetWayPoint()
         {
+			if (!newDirection)
+				return;
+
+			newDirection = false;
+			if (angleB > 20)
+				Debug.Log("PROCHAIN POINT CHAUD");
 		}
 
 		//Evaluate
@@ -312,7 +354,7 @@ namespace Leviathan
 			_dst = Vector2.Distance(_spaceship.Position, _nextWaypoint.Position);
 
 			if (_nextWaypoint.Position != closestWaypointPosition)
-				_OnNewTargetWayPoint();
+				newDirection = true;
 
 			closestWaypointPosition = _nextWaypoint.Position;
 
