@@ -84,6 +84,7 @@ namespace Leviathan
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
+			_fireShockwave = false;
 			_StoreDatas(spaceship, data);
             //_Spaceship();
             _thrust = 1;
