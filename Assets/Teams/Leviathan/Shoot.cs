@@ -1,4 +1,5 @@
 using BehaviorDesigner.Runtime.Tasks;
+using BehaviorDesigner.Runtime;
 using Leviathan;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,17 +7,21 @@ using UnityEngine;
 
 public class Shoot : Action
 {
-    public bool mustShoot;
-    public LeviathanController leviathanController;
+    private LeviathanController leviathan;
+    private BehaviorTree tree;
+    public SharedBool canShoot;
 
     public override void OnStart()
     {
-        setValue(mustShoot);
+        tree = gameObject.GetComponentInParent<BehaviorTree>();
+        leviathan = tree.GetComponentInParent<LeviathanController>();
+        setValue(canShoot.Value);
     }
 
     public void setValue(bool mineValue)
     {
-        leviathanController.setShootCondition(mineValue);
+        leviathan.setShootCondition(mineValue);
+        tree.SetVariableValue("Shoot", mineValue);
     }
 
 }

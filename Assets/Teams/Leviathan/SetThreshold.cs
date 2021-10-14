@@ -1,4 +1,5 @@
 using BehaviorDesigner.Runtime.Tasks;
+using BehaviorDesigner.Runtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +8,15 @@ public class SetThreshold : Action
 {
 
     public float thresholdValue;
-    public BehaviorTreeReference LeviathanBehavior;
+    private BehaviorTree tree;
     public override void OnStart()
     {
+        tree = gameObject.GetComponentInParent<BehaviorTree>();
         setTreshold(thresholdValue);
     }
 
     public void setTreshold (float value)
     {
-        LeviathanBehavior.variables.SetValue(value, 1);
+        tree.SetVariableValue("Threshold", value);
     }
 }

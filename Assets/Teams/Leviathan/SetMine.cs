@@ -7,16 +7,25 @@ using Leviathan;
 
 public class SetMine : Action
 {
-    public SharedBool placeMine;
-    public LeviathanController leviathan;
+    public SharedBool mine;
+    private LeviathanController leviathan;
+    private BehaviorTree tree;
 
     public override void OnStart()
     {
-        useMine(placeMine.Value);
+        tree = gameObject.GetComponentInParent<BehaviorTree>();
+        leviathan = tree.GetComponentInParent<LeviathanController>();
+        useMine(mine.Value);
+        
     }
 
     public void useMine(bool placeMine)
     {
+        
         leviathan.setMineCondition(placeMine);
+        if (placeMine)
+        {
+            tree.SetVariableValue("dropMine", placeMine);
+        }
     }
 }

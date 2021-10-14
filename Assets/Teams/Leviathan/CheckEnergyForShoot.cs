@@ -9,20 +9,28 @@ public class CheckEnergyForShockwave : Conditional
 {
 
     public SharedFloat minEnergyValue;
-    public float spaceshipEnergy;
-    public LeviathanController leviathanController;
-
-    public SharedBool checkShockwave;
+    private float spaceshipEnergy;
+    private LeviathanController leviathan;
+    private BehaviorTree tree;
 
     public override void OnStart()
     {
-        spaceshipEnergy = leviathanController.getSpaceship().Energy;
-        checkShockwave.SetValue(checkEnergy(minEnergyValue.Value, spaceshipEnergy));
+        tree = gameObject.GetComponentInParent<BehaviorTree>();
+        leviathan = tree.GetComponentInParent<LeviathanController>();
+        spaceshipEnergy = leviathan.getSpaceship().Energy;
+        checkEnergy(minEnergyValue.Value, spaceshipEnergy);
     }
 
-    private bool checkEnergy(float requiredEnergy, float actualSpaceshipEnergy)
+    private void checkEnergy(float requiredEnergy, float actualSpaceshipEnergy)
     {
-        if (actualSpaceshipEnergy >= requiredEnergy) return true;
-        else return false;
+
+        if (actualSpaceshipEnergy >= requiredEnergy)
+        {
+            tree.SetVariableValue("EnergyToShoot", true);
+        }
+        else {
+            tree.SetVariableValue("EnergyToShoot", false);
+        }
+
     }
 }
