@@ -14,7 +14,7 @@ public class GetClosestNextWaypoint : Action
     public override void OnStart()
     {
 
-		_tree = gameObject.GetComponentInParent<BehaviorTree>();
+		_tree = LeviathanController.instance.tree;
 
 		Vector2 closestWaypointPosition = Vector2.zero;
 
@@ -43,7 +43,9 @@ public class GetClosestNextWaypoint : Action
 		if (nextWaypoint.Value != closestWaypointPosition)
 			_tree.SetVariableValue("newWaypoint", true);
 
-		_tree.SetVariableValue("closestWaypoint", closestWaypointPosition);
+		Debug.Log("Closertwp: " + nextWaypoint.Value);
+
+		_tree.SetVariableValue("closestWaypoint", nextWaypoint.Value);
 		//closestWaypointPosition = nextWaypoint.Value;
 
 
@@ -70,6 +72,6 @@ public class GetClosestNextWaypoint : Action
 			}
 		}
 
-		LeviathanController.instance.tree.SetVariableValue("nextNextClosestWaypoint", nextClosestWaypoint);
+		LeviathanController.instance.tree.SetVariableValue("nextClosestWaypoint", nextClosestWaypoint);
 	}
 }
