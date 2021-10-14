@@ -19,13 +19,13 @@ namespace Leviathan
 		public GameData _data;
 		public SpaceShipView _spaceship;
 
-		private WayPointView _nextWaypoint;
+		public WayPointView _nextWaypoint;
 		private WayPointView _waypointAfter;
 		private Asteroid _actualAsteroidObstacle;
 
 		private GameObject _debug;
 
-		private Vector2 _targetDir;
+		public Vector2 _targetDir;
 
 		private List<Vector2> directions = new List<Vector2>();
 
@@ -39,7 +39,7 @@ namespace Leviathan
 		private int _asteroidMask;
 		private int _wayPointMask;
 
-		private Vector2 _dirA;
+		public Vector2 _dirA;
 		private Vector2 _dirB;
 		private Vector2 _dirC;
 		private float _dst;
@@ -75,9 +75,11 @@ namespace Leviathan
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			_StoreDatas(spaceship, data);
-			//_Spaceship();
+            //_Spaceship();
+            _thrust = 1;
+            //_targetOrientation = spaceship.Orientation;
 
-			return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
+            return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
 		}
 
 
@@ -104,8 +106,8 @@ namespace Leviathan
 
 			_aTargetOrientation = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
 
-			Debug.Log("_aTargetOrientation : " + _aTargetOrientation);
-			Debug.Log("spaceship : " + _spaceship.Orientation);
+			//Debug.Log("_aTargetOrientation : " + _aTargetOrientation);
+			//Debug.Log("spaceship : " + _spaceship.Orientation);
 
 			//_minDistDrift = _dirB
 
@@ -113,6 +115,8 @@ namespace Leviathan
 				_t = 1 - (_dst / _minDistDrift);
 			else
 				_t = 0;
+
+			_t = 0;
 
             //Debug.Log("T: " + _t);q
             Vector2 delta = _dirA - _spaceship.Velocity;
@@ -124,11 +128,9 @@ namespace Leviathan
 
 			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 
-			Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
-
 			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
 
-            Debug.Log(". : " + threshold);
+            //Debug.Log(". : " + threshold);
 
 			Vector2 perpendicular = Vector2.Perpendicular(_targetDir);
 			Vector2 origin = (directions[0] + perpendicular.normalized) * (_nextWaypoint.Radius * 1);
@@ -136,14 +138,14 @@ namespace Leviathan
 
             if ((Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg) > 0)
             {
-                _targetOrientation -= (threshold * ratio);
-                Debug.Log("Positif : " + _targetOrientation);
+                //_targetOrientation -= (threshold * ratio);
+                //Debug.Log("Positif : " + _targetOrientation);
             }
 
             else
             {
-                _targetOrientation += (-threshold * ratio);
-                Debug.Log("Negatif : " + _targetOrientation);
+                //_targetOrientation += (-threshold * ratio);
+                //Debug.Log("Negatif : " + _targetOrientation);
             }
 
         }

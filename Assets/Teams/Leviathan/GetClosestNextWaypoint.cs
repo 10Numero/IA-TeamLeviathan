@@ -43,7 +43,7 @@ public class GetClosestNextWaypoint : Action
 		if (nextWaypoint.Value != closestWaypointPosition)
 			_tree.SetVariableValue("newWaypoint", true);
 
-		Debug.Log("Closertwp: " + nextWaypoint.Value);
+		//Debug.Log("Closertwp: " + nextWaypoint.Value);
 
 		_tree.SetVariableValue("closestWaypoint", nextWaypoint.Value);
 		//closestWaypointPosition = nextWaypoint.Value;
@@ -64,7 +64,7 @@ public class GetClosestNextWaypoint : Action
 				float dst = Vector2.Distance(nextWaypoint.Value, LeviathanController.instance._data.WayPoints[i].Position);
 
 
-				if (dst < shortestDist && distNextWaypoint.Value != 0)
+				if (dst < shortestDistB)
 				{
 					shortestDistB = dst;
 					nextClosestWaypoint = LeviathanController.instance._data.WayPoints[i].Position;
@@ -72,6 +72,8 @@ public class GetClosestNextWaypoint : Action
 			}
 		}
 
+		float _dist = Vector2.Distance(LeviathanController.instance._spaceship.Position, nextWaypoint.Value);
+		LeviathanController.instance.tree.SetVariableValue("distNextWaypoint", _dist);
 		LeviathanController.instance.tree.SetVariableValue("nextClosestWaypoint", nextClosestWaypoint);
 	}
 }

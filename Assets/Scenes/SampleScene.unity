@@ -123,6 +123,26 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &13079035 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 821512576268259773, guid: 889ab55f6899dc042bed0f84c9d18bcd,
+    type: 3}
+  m_PrefabInstance: {fileID: 9075386313206793690}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &13079038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13079035}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d904b858e447a0b4794c6b0a79912e12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  angle: 0
+  dot: 0
 --- !u!1001 &20717897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1554,7 +1574,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 9075386313206793690}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 13079035}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21f500a2d65267a4b98f696cc0d73c15, type: 3}
@@ -3012,6 +3032,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceShip2
+      objectReference: {fileID: 0}
+    - target: {fileID: 821512576268259774, guid: 889ab55f6899dc042bed0f84c9d18bcd,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 889ab55f6899dc042bed0f84c9d18bcd, type: 3}

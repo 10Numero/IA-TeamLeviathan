@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GetDistances : Action
 {
-    public SharedFloat nextWaypointDist;
+    private float nextWaypointDist;
     public SharedFloat enemyDist;
     public SharedVector2 nextWaypoint;
 
