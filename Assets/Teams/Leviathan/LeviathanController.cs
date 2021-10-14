@@ -84,7 +84,6 @@ namespace Leviathan
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
-			_fireShockwave = false;
 			_StoreDatas(spaceship, data);
             //_Spaceship();
             _thrust = 1;
@@ -410,7 +409,15 @@ namespace Leviathan
 		public void setShockwaveCondition(bool shockwave)
 		{
 			_fireShockwave = shockwave;
+
+			StartCoroutine(ResetShockwave());
 		}
+
+		IEnumerator ResetShockwave()
+        {
+			yield return new WaitForEndOfFrame();
+			_fireShockwave = false;
+        }
 
 		public SpaceShipView getSpaceship()
 		{
