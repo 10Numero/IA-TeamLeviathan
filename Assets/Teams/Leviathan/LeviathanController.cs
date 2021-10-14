@@ -67,6 +67,9 @@ namespace Leviathan
 		public float angleB;
 		public bool newDirection;
 
+		public Vector2 asteroid;
+		private Vector2 asteroidDestination;
+
 		public Vector2 forward;
 		private void Awake()
         {
@@ -208,8 +211,18 @@ namespace Leviathan
 			//	//orientationA -= (dot * _t2 * ratio);
 			//}
 
+
 			//Orientation
 			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
+
+			//float deltaAngle = Vector2.SignedAngle(_spaceship.Velocity, _nextWaypoint.Position - _nextWaypoint.Position);
+			//deltaAngle *= 1.5f;
+			//deltaAngle = Mathf.Clamp(deltaAngle, -170, 170);
+			//float velocityOrientation = Vector2.SignedAngle(Vector2.right, _spaceship.Velocity);
+			//_targetOrientation = velocityOrientation + deltaAngle;
+
+			if (_DetectedAsteroid())
+				_AvoidAsteroidPoint();
 
 			//Debug
 			Debug.DrawRay(_spaceship.Position, forward, Color.red);
@@ -280,14 +293,17 @@ namespace Leviathan
 
 			float radiusRatio = 1.1f;
 
-			Vector2 perpendicular = Vector2.Perpendicular(_targetDir);
+			Vector2 perpendicular = Vector2.zero;
+
+			//Which Perpendicular
+			if(dot > 0)
+				perpendicular = Vector2.Perpendicular(_targetDir);
+			else
+				perpendicular = -Vector2.Perpendicular(_targetDir);
+
 			Vector2 origin = _actualAsteroidObstacle.view.Position;
 
-			if (directions.Count == 1)
-				directions.Add((origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio));
-			else
-				directions[1] = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
-
+			asteroidDestination = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
 
 			_debug.transform.position = (origin + perpendicular.normalized) * (_actualAsteroidObstacle.view.Radius * radiusRatio);
 		}
@@ -325,6 +341,7 @@ namespace Leviathan
 							_lastDistAsteroid = Vector2.Distance(_spaceship.Position, _hitAsteroid[i].collider.GetComponentInParent<Asteroid>().Position);
 							Debug.Break();
 							_actualAsteroidObstacle = _hitAsteroid[i].collider.GetComponentInParent<Asteroid>();
+							asteroid = _actualAsteroidObstacle.Position;
 							return true;
 						}
 					}
