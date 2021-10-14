@@ -13,7 +13,11 @@ namespace Leviathan
             RaycastHit2D hit = Physics2D.Raycast(LeviathanController.instance._spaceship.Position, LeviathanController.instance.forward);
 
             if(hit.distance <= maxDistDestroyMine.Value && hit.collider.gameObject.transform.parent.CompareTag("Mine"))
+            {
                 LeviathanController.instance.tree.SetVariableValue("mineIsInFront", true);
+                Debug.Log("MINE");
+            }
+
             else
                 LeviathanController.instance.tree.SetVariableValue("mineIsInFront", false);
         }
