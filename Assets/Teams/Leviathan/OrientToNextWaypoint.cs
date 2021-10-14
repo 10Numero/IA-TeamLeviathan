@@ -20,16 +20,20 @@ namespace Leviathan
 		public SharedVector2 dirA;
 
 		public SharedFloat avoidAsteroidOffset;
-		public SharedFloat dot;
 
 		public SharedFloat distConsideringAsteroidIsReach;
+
+		public SharedFloat orientToAvoid;
 
 		public override void OnStart()
 		{
 			if(asteroidPos.Value != Vector2.zero)
             {
-				if (Vector2.Distance(asteroidPos.Value, LeviathanController.instance._spaceship.Position) < distConsideringAsteroidIsReach.Value)
+				float dist = Vector2.Distance(asteroidPos.Value, LeviathanController.instance._spaceship.Position);
+
+				if (dist < distConsideringAsteroidIsReach.Value)
 				{
+					Debug.Log("Reset dist");
 					asteroidPos.Value = Vector2.zero;
 					LeviathanController.instance.tree.SetVariableValue("AsteroidPosition", Vector2.zero);
 				}
@@ -64,25 +68,9 @@ namespace Leviathan
             }
             else
             {
-				Vector2 perpendicular = Vector2.zero;
+				Debug.Log("Avoiding ..");
 
-				//Which Perpendicular
-				if (dot.Value > 0)
-					perpendicular = Vector2.Perpendicular(targetDir.Value);
-				else
-					perpendicular = -Vector2.Perpendicular(targetDir.Value);
-
-				Vector2 origin = asteroidPos.Value;
-
-				Vector2 asteroidAvoidPos = (origin + perpendicular.normalized) * (asteroidRadius.Value * avoidAsteroidOffset.Value);
-
-				new GameObject("Debug").transform.position = asteroidAvoidPos;
-
-				Vector2 dir = asteroidAvoidPos - LeviathanController.instance._spaceship.Position;
-				
-				float orient = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-				LeviathanController.instance.SetOrientation(orient);
+				LeviathanController.instance.SetOrientation(orientToAvoid.Value);
             }
 
 		}
