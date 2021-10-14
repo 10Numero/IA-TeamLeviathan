@@ -84,11 +84,12 @@ namespace Leviathan
 			_asteroidMask = maskAsteroid;
 			_wayPointMask = maskWaypoint;
 			_thrust = 1;
-			_dropMine = false;
 		}
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
+			if (_dropMine)
+				_dropMine = false;
 			_StoreDatas(spaceship, data);
             //_Spaceship();
             _thrust = 1;
