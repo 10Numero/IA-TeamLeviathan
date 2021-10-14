@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leviathan;
 
-public class DetectTargetFront : Action
+namespace Leviathan
 {
-    private LeviathanController leviathan;
-    private BehaviorTree tree;
-
-    public override void OnStart()
+    public class DetectTargetFront : Action
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        leviathan = tree.GetComponentInParent<LeviathanController>();
-        RaycastHit2D collider = Physics2D.Raycast(leviathan._spaceship.Position, leviathan._spaceship.Velocity);
-        
-    }
+        private LeviathanController leviathan;
+        private BehaviorTree tree;
 
+        public override void OnStart()
+        {
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            leviathan = tree.GetComponentInParent<LeviathanController>();
+            RaycastHit2D collider = Physics2D.Raycast(leviathan._spaceship.Position, leviathan._spaceship.Velocity);
+        }
+    }
 }
+

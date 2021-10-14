@@ -5,32 +5,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leviathan;
 
-public class CheckEnergyForShoot : Conditional
+namespace Leviathan
 {
-    public SharedFloat threshold;
-    public SharedFloat mineEnergyCost;
-    private float spaceshipEnergy;
-    private LeviathanController leviathan;
-    private BehaviorTree tree;
-
-    public override void OnStart()
+    public class CheckEnergyForShoot : Conditional
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        leviathan = tree.GetComponentInParent<LeviathanController>();
-        spaceshipEnergy = leviathan.getSpaceship().Energy;
-        checkEnergy(spaceshipEnergy);
-    }
+        public SharedFloat threshold;
+        public SharedFloat mineEnergyCost;
+        private float spaceshipEnergy;
+        private LeviathanController leviathan;
+        private BehaviorTree tree;
 
-    private void checkEnergy(float actualSpaceshipEnergy)
-    {
-
-        if (actualSpaceshipEnergy >= mineEnergyCost.Value + threshold.Value)
+        public override void OnStart()
         {
-            tree.SetVariableValue("EnergyToShoot", true);
-        }
-        else {
-            tree.SetVariableValue("EnergyToShoot", false);
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            leviathan = tree.GetComponentInParent<LeviathanController>();
+            spaceshipEnergy = leviathan.getSpaceship().Energy;
+            checkEnergy(spaceshipEnergy);
         }
 
+        private void checkEnergy(float actualSpaceshipEnergy)
+        {
+            if (actualSpaceshipEnergy >= mineEnergyCost.Value + threshold.Value)
+            {
+                tree.SetVariableValue("EnergyToShoot", true);
+            }
+            else
+            {
+                tree.SetVariableValue("EnergyToShoot", false);
+            }
+
+        }
     }
 }

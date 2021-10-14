@@ -5,16 +5,20 @@ using BehaviorDesigner.Runtime.Tasks;
 using Leviathan;
 using UnityEngine;
 
-public class GetDistances : Action
+namespace Leviathan
 {
-    private float nextWaypointDist;
-    public SharedFloat enemyDist;
-    public SharedVector2 nextWaypoint;
-
-    public override void OnStart()
+    public class GetDistances : Action
     {
-        nextWaypointDist = Vector2.Distance(LeviathanController.instance._spaceship.Position, nextWaypoint.Value);
+        private float nextWaypointDist;
+        public SharedFloat enemyDist;
+        public SharedVector2 nextWaypoint;
 
-        LeviathanController.instance.tree.SetVariableValue("distNextWaypoint", nextWaypointDist);
+        public override void OnStart()
+        {
+            nextWaypointDist = Vector2.Distance(LeviathanController.instance._spaceship.Position, nextWaypoint.Value);
+
+            LeviathanController.instance.tree.SetVariableValue("distNextWaypoint", nextWaypointDist);
+        }
     }
+
 }

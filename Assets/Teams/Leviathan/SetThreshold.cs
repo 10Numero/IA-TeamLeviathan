@@ -4,19 +4,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetThreshold : Action
+namespace Leviathan
 {
-
-    public float thresholdValue;
-    private BehaviorTree tree;
-    public override void OnStart()
+    public class SetThreshold : Action
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        setTreshold(thresholdValue);
-    }
+        public float thresholdValue;
+        private BehaviorTree tree;
+        public override void OnStart()
+        {
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            setTreshold(thresholdValue);
+        }
 
-    public void setTreshold (float value)
-    {
-        tree.SetVariableValue("Threshold", value);
+        public void setTreshold(float value)
+        {
+            tree.SetVariableValue("Threshold", value);
+        }
     }
 }

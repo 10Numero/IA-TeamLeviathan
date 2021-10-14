@@ -1,37 +1,33 @@
 using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Leviathan;
 
-public class CheckEnergyForMine : Conditional
+namespace Leviathan
 {
-    public SharedFloat threshold;
-    public SharedFloat minEnergyValue;
-    private float spaceshipEnergy;
-    private LeviathanController leviathan;
-    private BehaviorTree tree;
-
-    public override void OnStart()
+    public class CheckEnergyForMine : Conditional
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        leviathan = tree.GetComponentInParent<LeviathanController>();
-        spaceshipEnergy = leviathan.getSpaceship().Energy;
-        checkEnergy(spaceshipEnergy);
-    }
+        public SharedFloat threshold;
+        public SharedFloat minEnergyValue;
+        private float spaceshipEnergy;
+        private LeviathanController leviathan;
+        private BehaviorTree tree;
 
-    private void checkEnergy(float actualSpaceshipEnergy)
-    {
-
-        if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
+        public override void OnStart()
         {
-            tree.SetVariableValue("EnergyToDropMine", true);
-        }
-        else
-        {
-            tree.SetVariableValue("EnergyToDropMine", false);
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            leviathan = tree.GetComponentInParent<LeviathanController>();
+            spaceshipEnergy = leviathan.getSpaceship().Energy;
+            checkEnergy(spaceshipEnergy);
         }
 
+        private void checkEnergy(float actualSpaceshipEnergy)
+        {
+
+            if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
+                tree.SetVariableValue("EnergyToDropMine", true);
+            else
+                tree.SetVariableValue("EnergyToDropMine", false);
+        }
     }
 }
+
+

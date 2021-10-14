@@ -1,35 +1,34 @@
 using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Leviathan;
 
-public class CheckEnergyForShockwave : Conditional
+namespace Leviathan
 {
-    public SharedFloat threshold;
-    public SharedFloat minEnergyValue;
-    private float spaceshipEnergy;
-    private LeviathanController leviathan;
-    private BehaviorTree tree;
-
-    public override void OnStart()
+    public class CheckEnergyForShockwave : Conditional
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        leviathan = tree.GetComponentInParent<LeviathanController>();
-        spaceshipEnergy = leviathan.getSpaceship().Energy;
-        checkEnergy( spaceshipEnergy);
-    }
+        public SharedFloat threshold;
+        public SharedFloat minEnergyValue;
+        private float spaceshipEnergy;
+        private LeviathanController leviathan;
+        private BehaviorTree tree;
 
-    private void checkEnergy( float actualSpaceshipEnergy)
-    {
-        if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
+        public override void OnStart()
         {
-            tree.SetVariableValue("EnergyToShockwave", true);
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            leviathan = tree.GetComponentInParent<LeviathanController>();
+            spaceshipEnergy = leviathan.getSpaceship().Energy;
+            checkEnergy(spaceshipEnergy);
         }
-        else
+
+        private void checkEnergy(float actualSpaceshipEnergy)
         {
-            tree.SetVariableValue("EnergyToShockwave", false);
+            if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
+            {
+                tree.SetVariableValue("EnergyToShockwave", true);
+            }
+            else
+            {
+                tree.SetVariableValue("EnergyToShockwave", false);
+            }
         }
     }
 }

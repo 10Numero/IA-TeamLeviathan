@@ -5,12 +5,15 @@ using BehaviorDesigner.Runtime.Tasks;
 using Leviathan;
 using UnityEngine;
 
-public class OnNewWaypoint : Action
+namespace Leviathan
 {
-    public SharedBool newWaypoint;
-
-    public override void OnStart()
+    public class OnNewWaypoint : Action
     {
-        LeviathanController.instance.tree.SetVariableValue("newWaypoint", false);
+        public SharedBool newWaypoint;
+
+        public override void OnStart()
+        {
+            LeviathanController.instance.tree.SetVariableValue("newWaypoint", false);
+        }
     }
 }
