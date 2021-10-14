@@ -15,6 +15,8 @@ public class CheckEnemyInDangerousZone : Action
 
         if(enemyDist <= dangerousRange.Value)
             LeviathanController.instance.tree.SetVariableValue("EnemyIsInDangerousRange", true);
-    }
+        else 
+            LeviathanController.instance.tree.SetVariableValue("EnemyIsInDangerousRange", false);
 
+    }
 }
