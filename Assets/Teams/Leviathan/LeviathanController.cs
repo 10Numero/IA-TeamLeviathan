@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DoNotModify;
+using BehaviorDesigner.Runtime;
 
 namespace Leviathan
 {
@@ -14,9 +15,9 @@ namespace Leviathan
 		private bool _dropMine;
 		private bool _fireShockwave;
 
-		private SpaceShipView _otherSpaceship;
-		private GameData _data;
-		private SpaceShipView _spaceship;
+		public SpaceShipView _otherSpaceship;
+		public GameData _data;
+		public SpaceShipView _spaceship;
 
 		private WayPointView _nextWaypoint;
 		private WayPointView _waypointAfter;
@@ -53,6 +54,15 @@ namespace Leviathan
 		private bool _needToAdjustVelo;
         private Vector2 _dirOffset;
 
+		public static LeviathanController instance;
+		public BehaviorTree tree;
+
+        private void Awake()
+        {
+			instance = this;
+			tree = GetComponent<BehaviorTree>();
+        }
+
         public override void Initialize(SpaceShipView spaceship, GameData data)
 		{
 			int maskAsteroid = (1 << LayerMask.NameToLayer("Asteroid"));
@@ -65,7 +75,7 @@ namespace Leviathan
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			_StoreDatas(spaceship, data);
-			_Spaceship();
+			//_Spaceship();
 
 			return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
 		}
@@ -338,6 +348,11 @@ namespace Leviathan
 		{
 			return _spaceship;
 		}
+
+        public void SetOrientation(float orientation)
+        {
+			_targetOrientation = orientation;
+        }
 
 	}
 
