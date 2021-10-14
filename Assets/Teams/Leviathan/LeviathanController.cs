@@ -407,7 +407,12 @@ namespace Leviathan
 			_dropMine = mine;
 		}
 
-		public void ResetMineCondition() => _dropMine = false;
+		public IEnumerator ResetMineCondition()
+		{
+			 yield return new WaitForEndOfFrame();
+
+			_dropMine = false;
+		}
 
 		public void setShockwaveCondition(bool shockwave)
 		{
