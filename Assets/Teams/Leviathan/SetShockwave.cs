@@ -7,7 +7,7 @@ using Leviathan;
 
 public class SetShockwave : Action
 {
-    public bool setShockwaveValue;
+    public SharedBool setShockwaveValue;
     private LeviathanController leviathan;
     private BehaviorTree tree;
 
@@ -15,7 +15,7 @@ public class SetShockwave : Action
     {
         tree = gameObject.GetComponentInParent<BehaviorTree>();
         leviathan = tree.GetComponentInParent<LeviathanController>();
-        setValue(setShockwaveValue);
+        setValue(setShockwaveValue.Value);
     }
 
     public void setValue(bool shockwaveValue)

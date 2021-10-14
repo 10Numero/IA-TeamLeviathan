@@ -23,9 +23,6 @@ public class SetMine : Action
     {
         
         leviathan.setMineCondition(placeMine);
-        if (placeMine)
-        {
-            tree.SetVariableValue("dropMine", placeMine);
-        }
+        tree.SetVariableValue("dropMine", placeMine);
     }
 }

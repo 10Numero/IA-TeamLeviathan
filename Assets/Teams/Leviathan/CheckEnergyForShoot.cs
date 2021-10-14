@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Leviathan;
 
-public class CheckEnergyForShockwave : Conditional
+public class CheckEnergyForShoot : Conditional
 {
-
+    public SharedFloat threshold;
     public SharedFloat minEnergyValue;
     private float spaceshipEnergy;
     private LeviathanController leviathan;
@@ -18,13 +18,13 @@ public class CheckEnergyForShockwave : Conditional
         tree = gameObject.GetComponentInParent<BehaviorTree>();
         leviathan = tree.GetComponentInParent<LeviathanController>();
         spaceshipEnergy = leviathan.getSpaceship().Energy;
-        checkEnergy(minEnergyValue.Value, spaceshipEnergy);
+        checkEnergy(spaceshipEnergy);
     }
 
-    private void checkEnergy(float requiredEnergy, float actualSpaceshipEnergy)
+    private void checkEnergy(float actualSpaceshipEnergy)
     {
 
-        if (actualSpaceshipEnergy >= requiredEnergy)
+        if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
         {
             tree.SetVariableValue("EnergyToShoot", true);
         }
