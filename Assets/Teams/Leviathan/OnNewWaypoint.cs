@@ -14,7 +14,6 @@ namespace Leviathan
         public override void OnStart()
         {
             LeviathanController.instance.tree.SetVariableValue("newWaypoint", false);
-            LeviathanController.instance.setMineCondition(false);
             LeviathanController.instance.tree.SetVariableValue("AsteroidPosition", Vector2.zero);
             Debug.Log("New waypoint");
         }
