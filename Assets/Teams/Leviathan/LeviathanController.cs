@@ -405,12 +405,13 @@ namespace Leviathan
 		public void setMineCondition(bool mine)
 		{
 			_dropMine = mine;
+
+			StartCoroutine(ResetMineCondition());
 		}
 
-		public IEnumerator ResetMineCondition()
+		private IEnumerator ResetMineCondition()
 		{
-			 yield return new WaitForEndOfFrame();
-
+			 yield return new WaitForSeconds(1f);
 			_dropMine = false;
 		}
 

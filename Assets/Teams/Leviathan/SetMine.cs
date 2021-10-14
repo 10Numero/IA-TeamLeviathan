@@ -7,9 +7,5 @@ using Leviathan;
 
 public class SetMine : Action
 {
-    public override void OnStart() 
-    {
-        LeviathanController.instance.setMineCondition(true);
-        StartCoroutine(LeviathanController.instance.ResetMineCondition());
-    } 
+    public override void OnStart() => LeviathanController.instance.setMineCondition(true);
 }

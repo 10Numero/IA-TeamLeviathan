@@ -1,27 +1,26 @@
 using BehaviorDesigner.Runtime.Tasks;
 using BehaviorDesigner.Runtime;
-using Leviathan;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class Shoot : Action
+namespace Leviathan
 {
-    private LeviathanController leviathan;
-    private BehaviorTree tree;
-    public SharedBool canShoot;
-
-    public override void OnStart()
+    public class Shoot : Action
     {
-        tree = gameObject.GetComponentInParent<BehaviorTree>();
-        leviathan = tree.GetComponentInParent<LeviathanController>();
-        setValue(canShoot.Value);
-    }
+        private LeviathanController leviathan;
+        private BehaviorTree tree;
+        public SharedBool canShoot;
 
-    public void setValue(bool mineValue)
-    {
-        leviathan.setShootCondition(mineValue);
-        tree.SetVariableValue("Shoot", mineValue);
-    }
+        public override void OnStart()
+        {
+            tree = gameObject.GetComponentInParent<BehaviorTree>();
+            leviathan = tree.GetComponentInParent<LeviathanController>();
+            setValue(canShoot.Value);
+        }
 
+        public void setValue(bool mineValue)
+        {
+            leviathan.setShootCondition(mineValue);
+            tree.SetVariableValue("Shoot", mineValue);
+        }
+    }
 }
+
