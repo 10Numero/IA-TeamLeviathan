@@ -70,7 +70,8 @@ namespace Leviathan
 		public Vector2 asteroid;
 		private Vector2 asteroidDestination;
 
-		private bool isDroppedLastFrame;
+		private bool isMineDroppedLastFrame;
+		private bool isMineDestroyedLastFrame;
 
 		public Vector2 forward;
 		private void Awake()
@@ -90,10 +91,14 @@ namespace Leviathan
 
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
-			if (isDroppedLastFrame)
+			if (isMineDroppedLastFrame)
 				_dropMine = false;
 
-			isDroppedLastFrame = _dropMine ? true : false;
+			if (isMineDestroyedLastFrame)
+				_needShoot = false;
+
+			isMineDroppedLastFrame = _dropMine ? true : false;
+			isMineDestroyedLastFrame = _needShoot ? true : false;
 
 			_StoreDatas(spaceship, data);
             //_Spaceship();
