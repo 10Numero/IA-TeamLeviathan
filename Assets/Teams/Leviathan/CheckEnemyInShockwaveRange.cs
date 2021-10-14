@@ -13,5 +13,7 @@ public class CheckEnemyInShockwaveRange : Action
 
         if(enemyDist <= ShockwaveRange.Value)
             LeviathanController.instance.tree.SetVariableValue("EnemyIsInShockwaveRange", true);
+        else 
+            LeviathanController.instance.tree.SetVariableValue("EnemyIsInShockwaveRange", false);
     }
 }
