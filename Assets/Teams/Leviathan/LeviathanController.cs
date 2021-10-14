@@ -67,6 +67,7 @@ namespace Leviathan
 		public float angleB;
 		public bool newDirection;
 
+		public Vector2 forward;
 		private void Awake()
         {
 			instance = this;
@@ -127,7 +128,7 @@ namespace Leviathan
 			//Calcul delta - Besoin ??
 			float rot = LeviathanController.instance._spaceship.Orientation;
 			rot *= Mathf.Deg2Rad;
-			Vector2 forward = new Vector2(Mathf.Cos(rot), Mathf.Sin(rot));
+			forward = new Vector2(Mathf.Cos(rot), Mathf.Sin(rot));
 
 			//Angle exact -> + élevée + delta est grand
 			angle = Vector2.Angle(forward, dir);
