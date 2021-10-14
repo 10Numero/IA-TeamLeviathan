@@ -8,7 +8,7 @@ using Leviathan;
 public class CheckEnergyForShoot : Conditional
 {
     public SharedFloat threshold;
-    public SharedFloat minEnergyValue;
+    public SharedFloat mineEnergyCost;
     private float spaceshipEnergy;
     private LeviathanController leviathan;
     private BehaviorTree tree;
@@ -24,7 +24,7 @@ public class CheckEnergyForShoot : Conditional
     private void checkEnergy(float actualSpaceshipEnergy)
     {
 
-        if (actualSpaceshipEnergy >= minEnergyValue.Value + threshold.Value)
+        if (actualSpaceshipEnergy >= mineEnergyCost.Value + threshold.Value)
         {
             tree.SetVariableValue("EnergyToShoot", true);
         }
