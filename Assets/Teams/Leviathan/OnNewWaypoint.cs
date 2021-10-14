@@ -12,5 +12,6 @@ public class OnNewWaypoint : Action
     public override void OnStart()
     {
         LeviathanController.instance.tree.SetVariableValue("newWaypoint", false);
+        LeviathanController.instance.ResetMineCondition();
     }
 }
