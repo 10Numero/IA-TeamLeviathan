@@ -17,9 +17,9 @@ public class TestSideCheck : MonoBehaviour
         rot *= Mathf.Deg2Rad;
         Vector2 forward = new Vector2(Mathf.Cos(rot), Mathf.Sin(rot));
 
-        Debug.DrawRay(LeviathanController.instance._spaceship.Position, forward, Color.green);
-        Debug.DrawRay(LeviathanController.instance._spaceship.Position, LeviathanController.instance._dirA, Color.red);
-        Debug.DrawRay(LeviathanController.instance._spaceship.Position, LeviathanController.instance._targetDir, Color.yellow);
+        //Debug.DrawRay(LeviathanController.instance._spaceship.Position, forward, Color.green);
+        //Debug.DrawRay(LeviathanController.instance._spaceship.Position, LeviathanController.instance._dirA, Color.red);
+        //Debug.DrawRay(LeviathanController.instance._spaceship.Position, LeviathanController.instance._targetDir, Color.yellow);
 
         Vector2 dir = (LeviathanController.instance._nextWaypoint.Position - LeviathanController.instance._spaceship.Position);
 
@@ -29,7 +29,13 @@ public class TestSideCheck : MonoBehaviour
         //dot = Vector2.Dot(forward, dir.normalized);
         dot = (Vector2.Dot(dir.normalized, right));
 
-        Debug.Log("Looking");
+        if(dot > 0)
+        {
+            Debug.Log("Looking left");
+        }
+        else
+            Debug.Log("Looking right");
+
 
         //Debug.Log("Angle : " + angle);
     }

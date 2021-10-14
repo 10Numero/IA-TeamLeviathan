@@ -10,7 +10,6 @@ namespace Leviathan
 	{
 		private float _thrust;
 		private float _targetOrientation;
-		private float _aTargetOrientation;
 		private bool _needShoot;
 		private bool _dropMine;
 		private bool _fireShockwave;
@@ -75,9 +74,9 @@ namespace Leviathan
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			_StoreDatas(spaceship, data);
-            //_Spaceship();
+            _Spaceship();
             _thrust = 1;
-            //_targetOrientation = spaceship.Orientation;
+			//_targetOrientation = spaceship.Orientation;
 
             return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
 		}
@@ -101,54 +100,78 @@ namespace Leviathan
 			if (Vector2.Distance(_spaceship.Position, directions[0]) < .1f)
 				directions.Remove(directions[0]);
 
-			_dirA = (directions[0] - _spaceship.Position);
+
+			//Some calcul
+			float ratio = .1f;
+			float deviantRot = LeviathanController.instance._spaceship.Orientation + 90;
+			deviantRot *= Mathf.Deg2Rad;
+			Vector2 right = new Vector2(Mathf.Cos(deviantRot), Mathf.Sin(deviantRot));
+
+			Vector2 dir = (_nextWaypoint.Position - _spaceship.Position);
+
+			float dot = (Vector2.Dot(dir.normalized, right));
+
+			float _t2 = 0;
+
+			//Calcul delta - Besoin ??
+			float rot = LeviathanController.instance._spaceship.Orientation;
+			rot *= Mathf.Deg2Rad;
+			Vector2 forward = new Vector2(Mathf.Cos(rot), Mathf.Sin(rot));
+
+			//Angle exact -> + élevée + delta est grand
+			float angle = Vector2.Angle(forward, dir);
+
+
+			//Direction
+			_dirA = directions[0] - _spaceship.Position;
 			_dirB = directions[1] - _spaceship.Position;
 
-			_aTargetOrientation = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
 
-			//Debug.Log("_aTargetOrientation : " + _aTargetOrientation);
-			//Debug.Log("spaceship : " + _spaceship.Orientation);
-
-			//_minDistDrift = _dirB
-
+			//Drift
 			if (_dst <= _minDistDrift)
 				_t = 1 - (_dst / _minDistDrift);
 			else
 				_t = 0;
 
-			_t = 0;
 
-            //Debug.Log("T: " + _t);q
-            Vector2 delta = _dirA - _spaceship.Velocity;
-			float threshold = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
-			float ratio = 0.1f;
-			
-	
+			//optimization drift orientation
+			if (_dst <= _minDistDrift)
+				_t2 = 1 - (_dst / 1);
+			else
+				_t2 = 0;
 
+
+
+			if (dot > 0)
+			{
+				//Faut aller vers la droite
+				Debug.Log("Looking left");
+				//orientationA += ((_t2 * ratio) * dot);
+			}
+			else
+			{
+				Debug.Log("Looking right");
+				//orientationA -= ((_t2 * ratio) * dot);
+			}
+
+			//Final orientation
+			float orientationA = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
+			float orientationB = Mathf.Atan2(_dirB.y, _dirB.x) * Mathf.Rad2Deg;
 
 			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 
-			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
+            _targetOrientation = Mathf.Lerp(orientationA, orientationB, _t);
+            //_targetOrientation = orientationA;
+            //_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
 
-            //Debug.Log(". : " + threshold);
-
-			Vector2 perpendicular = Vector2.Perpendicular(_targetDir);
-			Vector2 origin = (directions[0] + perpendicular.normalized) * (_nextWaypoint.Radius * 1);
-
-
-            if ((Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg) > 0)
-            {
-                //_targetOrientation -= (threshold * ratio);
-                //Debug.Log("Positif : " + _targetOrientation);
-            }
-
-            else
-            {
-                //_targetOrientation += (-threshold * ratio);
-                //Debug.Log("Negatif : " + _targetOrientation);
-            }
-
-        }
+            //Debug
+            Debug.DrawRay(_spaceship.Position, forward, Color.red);
+			//Debug.DrawRay(_spaceship.Position, new Vector2(Mathf.Cos(orientationA * Mathf.Deg2Rad), Mathf.Sin(orientationA * Mathf.Deg2Rad)), Color.blue);
+			//Debug.DrawRay(_spaceship.Position, new Vector2(Mathf.Cos(orientationB * Mathf.Deg2Rad), Mathf.Sin(orientationB * Mathf.Deg2Rad)), Color.blue);
+			Debug.DrawRay(_spaceship.Position, _dirB, Color.green);
+			Debug.DrawRay(_spaceship.Position, _dirA, Color.cyan);
+			Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
+		}
 
 		void _OnNewTargetWayPoint()
         {

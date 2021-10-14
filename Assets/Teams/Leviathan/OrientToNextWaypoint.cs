@@ -27,7 +27,7 @@ public class OrientToNextWaypoint : Action
 
 		Vector2 _targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 
-		//Debug.DrawRay(_spaceship.Position, _targetDir, Color.yellow);
+		Debug.DrawRay(LeviathanController.instance._spaceship.Position, _targetDir, Color.white);
 
 		float _targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
 
