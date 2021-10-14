@@ -404,6 +404,14 @@ namespace Leviathan
 		public void setMineCondition(bool mine)
 		{
 			_dropMine = mine;
+			StartCoroutine(ResetMine());
+
+		}
+
+		IEnumerator ResetMine()
+		{
+			yield return new WaitForSeconds(1);
+			_dropMine = false;
 		}
 
 		public void setShockwaveCondition(bool shockwave)
