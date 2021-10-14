@@ -43,7 +43,11 @@ namespace Leviathan
 			//_dst = Vector2.Distance(_spaceship.Position, _nextWaypoint.Position);
 
 			if (nextWaypoint.Value != closestWaypointPosition)
+            {
 				_tree.SetVariableValue("newWaypoint", true);
+				Debug.Log("NEW WP");
+			}
+
 
 			//Debug.Log("Closertwp: " + nextWaypoint.Value);
 

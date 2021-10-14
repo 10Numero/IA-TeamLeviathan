@@ -93,16 +93,8 @@ namespace Leviathan
             _thrust = 1;
 			//_targetOrientation = spaceship.Orientation;
 
-			StartCoroutine(ResetDatas());
-
             return new InputData(_thrust, _targetOrientation, _needShoot, _dropMine, _fireShockwave);
 		}
-
-		IEnumerator ResetDatas()
-        {
-			yield return new WaitForEndOfFrame();
-			_dropMine = false;
-        }
 
 
         void _SpaceShipDirection()
