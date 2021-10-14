@@ -70,6 +70,7 @@ namespace Leviathan
 
 							float orient = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
+							Debug.Log("Asteroid in front ! ");
 
 							LeviathanController.instance.tree.SetVariableValue("LastAsteroidDist", actualDistAsteroid);
 							LeviathanController.instance.tree.SetVariableValue("OrientToAvoidAsteroid", orient);

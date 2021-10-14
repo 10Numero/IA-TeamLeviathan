@@ -72,6 +72,8 @@ namespace Leviathan
 
 		private bool isMineDroppedLastFrame;
 		private bool isMineDestroyedLastFrame;
+		private bool isNewWaypoint;
+		private bool newWaypoint;
 
 		public Vector2 forward;
 		private void Awake()
@@ -89,6 +91,11 @@ namespace Leviathan
 			_thrust = 1;
 		}
 
+		public void NewWaypoint()
+        {
+			newWaypoint = true;
+		}
+
 		public override InputData UpdateInput(SpaceShipView spaceship, GameData data)
 		{
 			if (isMineDroppedLastFrame)
@@ -97,6 +104,12 @@ namespace Leviathan
 			if (isMineDestroyedLastFrame)
 				_needShoot = false;
 
+			if (newWaypoint)
+				newWaypoint = false;
+			else
+				tree.SetVariableValue("AsteroidPosition", Vector2.zero);
+
+			isNewWaypoint = newWaypoint ? true : false;
 			isMineDroppedLastFrame = _dropMine ? true : false;
 			isMineDestroyedLastFrame = _needShoot ? true : false;
 
