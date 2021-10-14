@@ -27,19 +27,6 @@ namespace Leviathan
 
 		public override void OnStart()
 		{
-			if(asteroidPos.Value != Vector2.zero)
-            {
-				float dist = Vector2.Distance(asteroidPos.Value, LeviathanController.instance._spaceship.Position);
-
-				if (dist < distConsideringAsteroidIsReach.Value)
-				{
-					Debug.Log("Reset dist");
-					asteroidPos.Value = Vector2.zero;
-					LeviathanController.instance.tree.SetVariableValue("AsteroidPosition", Vector2.zero);
-				}
-			}
-
-
 			if(asteroidPos.Value == Vector2.zero)
             {
 				float _t = 0;
@@ -71,7 +58,18 @@ namespace Leviathan
 				Debug.Log("Avoiding ..");
 
 				LeviathanController.instance.SetOrientation(orientToAvoid.Value);
-            }
+
+				float dist = Vector2.Distance(asteroidPos.Value, LeviathanController.instance._spaceship.Position);
+
+				Debug.Log("dist : " + dist);
+
+				if (dist < distConsideringAsteroidIsReach.Value)
+				{
+					Debug.Log("Reset dist");
+					asteroidPos.Value = Vector2.zero;
+					LeviathanController.instance.tree.SetVariableValue("AsteroidPosition", Vector2.zero);
+				}
+			}
 
 		}
 	}

@@ -59,7 +59,7 @@ namespace Leviathan
 							else
 								perpendicular = -Vector2.Perpendicular(dirA.Value);
 
-							Vector2 origin = asteroidPos.Value;
+							Vector2 origin = asteroid.Position;
 
 							Vector2 asteroidAvoidPos = (origin + perpendicular.normalized) * (asteroid.Radius * avoidAsteroidOffset.Value);
 
