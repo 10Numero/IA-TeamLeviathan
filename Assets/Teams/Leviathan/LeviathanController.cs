@@ -163,34 +163,33 @@ namespace Leviathan
 				_t = 0;
 
 			//if (dot > 0)
-   //         {
+			//         {
 			//	//Gros angle
 			//	if(dot > 0.4f)
-   //             {
+			//             {
 			//		_targetOrientation = (dot * ratio);
 			//		_targetDir = _dirA;
 			//		Debug.Log("Left Chaud");
 
 			//	}
-   //             else
-   //             {
+			//             else
+			//             {
 			//		_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 			//	}
-   //         }
-   //         else
-   //         {
+			//         }
+			//         else
+			//         {
 			//	if(dot < -0.4f)
-   //             {
+			//             {
 			//		_targetOrientation = -(dot * ratio);
 			//		_targetDir = _dirA;
 			//		Debug.Log("Right Chaud");
 			//	}
-   //             else
-   //             {
+			//             else
+			//             {
 
 			//	}
-            //}
-			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
+			//}
 
 			//optimization drift orientation
 			//if (_dst > 0.1f && _dst <= 0.2f)
@@ -211,7 +210,7 @@ namespace Leviathan
 			//	//orientationA -= (dot * _t2 * ratio);
 			//}
 
-
+			_targetDir = Vector2.Lerp(_dirA, _dirB, _t);
 			//Orientation
 			_targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
 

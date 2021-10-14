@@ -74,8 +74,6 @@ namespace Leviathan
 				}
 			}
 
-			float _dist = Vector2.Distance(LeviathanController.instance._spaceship.Position, nextWaypoint.Value);
-			LeviathanController.instance.tree.SetVariableValue("distNextWaypoint", _dist);
 			LeviathanController.instance.tree.SetVariableValue("nextClosestWaypoint", nextClosestWaypoint);
 		}
 	}

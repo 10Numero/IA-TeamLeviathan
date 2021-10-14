@@ -13,43 +13,78 @@ namespace Leviathan
 		public SharedVector2 nextNextClosestWaypoint;
 		public SharedFloat dst;
 		public SharedFloat minDistDrift;
+		public SharedVector2 asteroidPos;
+		public SharedFloat asteroidRadius;
+
+		public SharedVector2 targetDir;
+		public SharedVector2 dirA;
+
+		public SharedFloat avoidAsteroidOffset;
+		public SharedFloat dot;
+
+		public SharedFloat distConsideringAsteroidIsReach;
 
 		public override void OnStart()
 		{
-			float _t = 0;
-
-			Vector2 _dirA = (nextClosestWaypoint.Value - LeviathanController.instance._spaceship.Position);
-			Vector2 _dirB = nextNextClosestWaypoint.Value - LeviathanController.instance._spaceship.Position;
-
-
-			if (dst.Value <= minDistDrift.Value)
-				_t = 1 - (dst.Value / minDistDrift.Value);
-			else
-				_t = 0;
-
-			Vector2 _targetDir = Vector2.Lerp(_dirA, _dirB, _t);
-
-			Debug.DrawRay(LeviathanController.instance._spaceship.Position, _targetDir, Color.white);
-
-			float _targetOrientation = Mathf.Atan2(_targetDir.y, _targetDir.x) * Mathf.Rad2Deg;
-
-			float threshold = Mathf.Atan2(_dirA.y, _dirA.x) * Mathf.Rad2Deg;
-			float ratio = 0.1f;
-
-
-			if (threshold > 0)
-			{
-				_targetOrientation -= (threshold * ratio);
-				//Debug.Log("Positif : " + _targetOrientation);
+			if(asteroidPos.Value != Vector2.zero)
+            {
+				if (Vector2.Distance(asteroidPos.Value, LeviathanController.instance._spaceship.Position) < distConsideringAsteroidIsReach.Value)
+				{
+					asteroidPos.Value = Vector2.zero;
+					LeviathanController.instance.tree.SetVariableValue("AsteroidPosition", Vector2.zero);
+				}
 			}
 
-			else
-			{
-				_targetOrientation += (-threshold * ratio);
-				//Debug.Log("Negatif : " + _targetOrientation);
-			}
 
-			LeviathanController.instance.SetOrientation(_targetOrientation);
+			if(asteroidPos.Value == Vector2.zero)
+            {
+				float _t = 0;
+
+				if (dst.Value <= minDistDrift.Value)
+					_t = 1 - (dst.Value / minDistDrift.Value);
+				else
+					_t = 0;
+
+				LeviathanController.instance.tree.SetVariableValue("T", _t);
+
+				Debug.DrawRay(LeviathanController.instance._spaceship.Position, targetDir.Value, Color.white);
+
+				float _targetOrientation = Mathf.Atan2(targetDir.Value.y, targetDir.Value.x) * Mathf.Rad2Deg;
+
+				float threshold = Mathf.Atan2(dirA.Value.y, dirA.Value.x) * Mathf.Rad2Deg;
+				float ratio = 0.1f;
+
+
+				if (threshold > 0)
+					_targetOrientation -= (threshold * ratio);
+				else
+					_targetOrientation += (-threshold * ratio);
+
+				LeviathanController.instance.SetOrientation(_targetOrientation);
+            }
+            else
+            {
+				Vector2 perpendicular = Vector2.zero;
+
+				//Which Perpendicular
+				if (dot.Value > 0)
+					perpendicular = Vector2.Perpendicular(targetDir.Value);
+				else
+					perpendicular = -Vector2.Perpendicular(targetDir.Value);
+
+				Vector2 origin = asteroidPos.Value;
+
+				Vector2 asteroidAvoidPos = (origin + perpendicular.normalized) * (asteroidRadius.Value * avoidAsteroidOffset.Value);
+
+				new GameObject("Debug").transform.position = asteroidAvoidPos;
+
+				Vector2 dir = asteroidAvoidPos - LeviathanController.instance._spaceship.Position;
+				
+				float orient = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+				LeviathanController.instance.SetOrientation(orient);
+            }
+
 		}
 	}
 }
