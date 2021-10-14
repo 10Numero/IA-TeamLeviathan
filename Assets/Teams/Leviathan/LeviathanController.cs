@@ -415,7 +415,7 @@ namespace Leviathan
 
 		IEnumerator ResetShockwave()
         {
-			yield return new WaitForEndOfFrame();
+			yield return new WaitForSeconds(1);
 			_fireShockwave = false;
         }
 
