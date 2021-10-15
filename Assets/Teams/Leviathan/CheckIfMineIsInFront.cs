@@ -1,5 +1,6 @@
 using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
+using DoNotModify;
 using UnityEngine;
 
 namespace Leviathan
@@ -14,8 +15,15 @@ namespace Leviathan
 
             if(hit.distance <= maxDistDestroyMine.Value && hit.collider.gameObject.transform.parent.CompareTag("Mine"))
             {
-                LeviathanController.instance.tree.SetVariableValue("mineIsInFront", true);
-                Debug.Log("MINE");
+                if (hit.collider.GetComponentInParent<Mine>().IsActive)
+                {
+                    LeviathanController.instance.tree.SetVariableValue("mineIsInFront", true);
+                    Debug.Log("MINE");
+                }
+                else
+                {
+                    LeviathanController.instance.tree.SetVariableValue("mineIsInFront", false);
+                }
             }
 
             else
