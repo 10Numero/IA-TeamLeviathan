@@ -109,6 +109,7 @@ namespace Leviathan
 			else
 				tree.SetVariableValue("AsteroidPosition", Vector2.zero);
 
+			tree.SetVariableValue("Energy", spaceship.Energy);
 			isNewWaypoint = newWaypoint ? true : false;
 			isMineDroppedLastFrame = _dropMine ? true : false;
 			isMineDestroyedLastFrame = _needShoot ? true : false;
